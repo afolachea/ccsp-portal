@@ -1,3 +1,5 @@
 module.exports = {
-  publicPath: '/ccsp-portal/'
+  publicPath: process.env.NODE_ENV === 'production'
+    ? '/ccsp-portal/'
+    : '/'
 }
