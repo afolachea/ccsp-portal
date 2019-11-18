@@ -38,7 +38,7 @@ export default class AppDashboard extends Vue {
 
   loadData() {
     staticData.generate();
-    console.log(staticData.entries);
+    // console.log(staticData.entries);
     this.fullData = staticData.entries;
 
     const getPressuresPerHour = (day: number) => {
