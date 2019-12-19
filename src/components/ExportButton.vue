@@ -1,12 +1,12 @@
 <template>
   <JsonExcel
-    class   = "btn btn-default"
+    class   = "excel-export"
     :data   = "data"
     :fields = "json_fields"
-    worksheet = "My Worksheet"
+    worksheet = "Continuidad y Calidad del Agua"
     name    = "ccsp_report.xls">
 
-    <v-btn color="primary"> Download Excel </v-btn>
+    <v-btn color="primary"> Descargar Excel </v-btn>
 
   </JsonExcel>
 </template>
@@ -29,6 +29,10 @@ export default class ExportButton extends Vue {
       'Mes': 'datetime.month',
       'Día': 'datetime.day',
       'Hora': 'datetime.hour',
+      'Continuidad': {
+        field: 'pressure',
+        callback: (value: number) => value ? 'Con Agua' : 'Sin Agua',
+      },
       'Presión': {
         field: 'pressure',
         callback: (value: number) => {
@@ -39,6 +43,23 @@ export default class ExportButton extends Vue {
             case 3: return 'Alta';
             default: return '';
           }
+        }
+      },
+      'Calidad': {
+        field: 'qualities',
+        callback: (value: number) => {
+          return Object.entries(value).filter(x => x[1]).map(x => {
+            switch (x[0]) {
+              case 'transparent': return 'Transparente';
+              case 'cloudy': return 'Turbia';
+              case 'mud': return 'Lodo';
+              case 'chlorine_smell': return 'Olor a Cloro';
+              case 'air': return 'Aire';
+              case 'salty': return 'Salada';
+              case 'other': return 'Otro';
+              default: return '';
+            }
+          }).join(', ');
         }
       },
       'Usuario': 'user.id',
@@ -56,4 +77,8 @@ export default class ExportButton extends Vue {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
+  .excel-export {
+    display: inline-block;
+    margin: 0 1em;
+  }
 </style>

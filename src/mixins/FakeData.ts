@@ -8,6 +8,7 @@ export default class FakeData {
 
   generate() {
     let date = new Date(2019, 0, 1);
+    const maxDate = new Date(2019, 2, 1);
 
     this.users = [...Array(this.numUsers)].map((_, i) => {
       return {
@@ -21,15 +22,53 @@ export default class FakeData {
 
     let pressureIndex = Math.floor(Math.random() * 4);
     let spanDuration = Math.floor(this.randn_bm(1, 16, 1));
+    const defaultQuality = {
+      transparent: true,
+      cloudy: false,
+      mud: false,
+      chlorine_smell: false,
+      air: false,
+      salty: false,
+      other: false,
+    };
+    let quality = defaultQuality;
     let hour = 0;
 
     // console.log(date, pressureIndex, spanDuration, hour);
 
-    while (date.getFullYear() === 2019) {
+    while (date < maxDate) {
 
       if (spanDuration === 0) {
+        const prevPressureIndex = pressureIndex;
         pressureIndex = Math.floor(Math.random() * 4);
         spanDuration = Math.floor(this.randn_bm(1, 16, 1));
+
+
+        if (prevPressureIndex === 0 && pressureIndex !== 0) {
+          const visibility = Math.floor(Math.random() * 100);
+          const smell = Math.floor(Math.random() * 100);
+          const taste = Math.floor(Math.random() * 100);
+          const other = Math.floor(Math.random() * 100) > 95;
+          quality = {
+            transparent: !other && visibility < 70,
+            cloudy: visibility >= 70 && visibility < 90,
+            mud: visibility >= 90,
+            chlorine_smell: smell > 90,
+            air: visibility % 9 === 0,
+            salty: taste > 95,
+            other,
+          };
+        } else {
+          quality = {
+            transparent: pressureIndex !== 0,
+            cloudy: false,
+            mud: false,
+            chlorine_smell: false,
+            air: false,
+            salty: false,
+            other: false,
+          };
+        }
         
         // console.log(pressureIndex);
       }
@@ -61,6 +100,7 @@ export default class FakeData {
               user,
               datetime,
               pressure,
+              qualities: quality,
             });
           }
         })
@@ -101,7 +141,7 @@ export default class FakeData {
 }
 
 
-interface Entry {
+export interface Entry {
   datetime: {
     year: number,
     month: number,
@@ -110,7 +150,18 @@ interface Entry {
     minutes: number,
   },
   pressure: number,
+  qualities: Qualities,
   user: User,
+}
+
+export interface Qualities {
+  transparent: boolean,
+  cloudy: boolean,
+  mud: boolean,
+  chlorine_smell: boolean,
+  air: boolean,
+  salty: boolean,
+  other: boolean,
 }
 
 interface User {
