@@ -23,6 +23,7 @@
     "@types/chart.js": "^2.9.5",
     "chart.js": "^2.9.3",
     "core-js": "^3.5.0",
+    "moment": "^2.24.0",
     "vue": "^2.6.11",
     "vue-chartjs": "^3.5.0",
     "vue-class-component": "^7.0.2",
